@@ -14,11 +14,6 @@ This folder gathers a variety of projects, code examples, and practical exercise
 
 [![Demo](assets/images/imgdemo.png "Click to see the video")](https://youtu.be/BEHCjWC9OX4)
 
-<iframe src="https://player.vimeo.com/video/https://youtu.be/BEHCjWC9OX4" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-
-<img src="https://img.youtube.com/vi/BEHCjWC9OX4/hqdefault.jpg" width="600" height="300" />
-
-
 ## 🌱 Possible Improvements
 
 - **API Usage**: Explore integrating data from external APIs to enhance functionality.
