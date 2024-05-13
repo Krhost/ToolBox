@@ -12,7 +12,10 @@ This folder gathers a variety of projects, code examples, and practical exercise
 
 ## 🎥 Demo
 
-[![Demo](assets/images/imgdemo.png "Click to see the video")](https://youtu.be/BEHCjWC9OX4)
+[![Demo](assets/images/imgdemo.png "Click to see the video")]()
+
+<iframe src="https://player.vimeo.com/video/https://youtu.be/BEHCjWC9OX4" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+
 
 ## 🌱 Possible Improvements
 
