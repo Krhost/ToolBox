@@ -12,7 +12,7 @@ This folder gathers a variety of projects, code examples, and practical exercise
 
 ## 🎥 Demo
 
-[![Demo](assets/images/imgdemo.png "Click to see the video")](assets/videos/demo.mp4)
+[![Demo](https://youtu.be/BEHCjWC9OX4 "Click to see the video")](assets/videos/demo.mp4)
 
 ## 🌱 Possible Improvements
 
