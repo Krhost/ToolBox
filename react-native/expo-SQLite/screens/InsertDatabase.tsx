@@ -18,22 +18,24 @@ let db;
 async function openDatabase(
   pathToDatabaseFile: string
 ): Promise<SQLite.SQLiteDatabase> {
-  if (
-    !(await FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite"))
-      .exists
-  ) {
-    await FileSystem.makeDirectoryAsync(
-      FileSystem.documentDirectory + "SQLite"
-    );
+  const dbPath = FileSystem.documentDirectory + "SQLite/data.db";
+  const fileInfo = await FileSystem.getInfoAsync(dbPath);
+  if (!fileInfo.exists) {
+    if (
+      !(await FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite"))
+        .exists
+    ) {
+      await FileSystem.makeDirectoryAsync(
+        FileSystem.documentDirectory + "SQLite"
+      );
+    }
+    const asset = await Asset.fromModule(require("../data.db")).downloadAsync();
+    await FileSystem.copyAsync({
+      from: asset.localUri,
+      to: dbPath,
+    });
   }
-  const asset = await Asset.fromModule(
-    require("../database.db")
-  ).downloadAsync();
-  await FileSystem.copyAsync({
-    from: asset.localUri,
-    to: FileSystem.documentDirectory + "SQLite/database.db",
-  });
-  return SQLite.openDatabase("../database.db");
+  return SQLite.openDatabase("../data.db");
 }
 
 export default function InsertDatabase() {
@@ -43,31 +45,31 @@ export default function InsertDatabase() {
   const [telephone, setTelephone] = useState("");
 
   useEffect(() => {
-    (async () => {
-      db = await openDatabase("../database.db");
-      db.transaction(tx => {
+    openDatabase("../data.db").then((database) => {
+      db = database;
+      db.transaction((tx) => {
         tx.executeSql(
           "CREATE TABLE IF NOT EXISTS ma_table (id INTEGER PRIMARY KEY AUTOINCREMENT, nom TEXT, prenom TEXT, email TEXT, telephone TEXT);",
           [],
-          () => console.log('Table créée avec succès'),
-          (_, error) => console.log('Erreur lors de la création de la table : ', error)
+          () => console.log("Table créée avec succès"),
+          (_, error) =>
+            console.log("Erreur lors de la création de la table : ", error)
         );
       });
-    })();
+    });
   }, []);
-  
 
   const handleSubmit = () => {
-    db.transaction(tx => {
+    db.transaction((tx) => {
       tx.executeSql(
         "INSERT INTO ma_table (nom, prenom, email, telephone) values (?, ?, ?, ?)",
         [nom, prenom, email, telephone],
-        (_, resultSet) => console.log('ID de la ligne insérée : ', resultSet.insertId),
-        (_, error) => console.log('Erreur d\'insertion : ', error)
+        (_, resultSet) =>
+          console.log("ID de la ligne insérée : ", resultSet.insertId),
+        (_, error) => console.log("Erreur d'insertion : ", error)
       );
     });
   };
-  
 
   return (
     <SafeAreaView style={styles.container}>

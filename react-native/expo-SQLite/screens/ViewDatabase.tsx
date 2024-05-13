@@ -5,7 +5,7 @@ import {
   SafeAreaView,
   View,
   Text,
-  ScrollView
+  ScrollView,
 } from "react-native";
 
 import * as FileSystem from "expo-file-system";
@@ -18,22 +18,24 @@ let db;
 async function openDatabase(
   pathToDatabaseFile: string
 ): Promise<SQLite.SQLiteDatabase> {
-  if (
-    !(await FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite"))
-      .exists
-  ) {
-    await FileSystem.makeDirectoryAsync(
-      FileSystem.documentDirectory + "SQLite"
-    );
+  const dbPath = FileSystem.documentDirectory + "SQLite/data.db";
+  const fileInfo = await FileSystem.getInfoAsync(dbPath);
+  if (!fileInfo.exists) {
+    if (
+      !(await FileSystem.getInfoAsync(FileSystem.documentDirectory + "SQLite"))
+        .exists
+    ) {
+      await FileSystem.makeDirectoryAsync(
+        FileSystem.documentDirectory + "SQLite"
+      );
+    }
+    const asset = await Asset.fromModule(require("../data.db")).downloadAsync();
+    await FileSystem.copyAsync({
+      from: asset.localUri,
+      to: dbPath,
+    });
   }
-  const asset = await Asset.fromModule(
-    require("../database.db")
-  ).downloadAsync();
-  await FileSystem.copyAsync({
-    from: asset.localUri,
-    to: FileSystem.documentDirectory + "SQLite/database.db",
-  });
-  return SQLite.openDatabase("../database.db");
+  return SQLite.openDatabase("../data.db");
 }
 
 export default function ViewDatabase() {
@@ -41,13 +43,14 @@ export default function ViewDatabase() {
 
   useEffect(() => {
     (async () => {
-      db = await openDatabase("../database.db");
-      db.transaction(tx => {
+      db = await openDatabase("../data.db");
+      db.transaction((tx) => {
         tx.executeSql(
           "SELECT * FROM ma_table;",
           [],
           (_, { rows: { _array } }) => setData(_array),
-          (_, error) => console.log('Erreur lors de la récupération des données : ', error)
+          (_, error) =>
+            console.log("Erreur lors de la récupération des données : ", error)
         );
       });
     })();
@@ -110,4 +113,3 @@ const styles = StyleSheet.create({
     color: "#333",
   },
 });
-
